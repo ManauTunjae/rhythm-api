@@ -6,7 +6,7 @@ const songRouter = express.Router();
 // Get all songs from database
 songRouter.get('/', async (req, res) => {
     try {
-        const allSongs = await Song.find(); 
+        const allSongs = await Song.find().sort({ id: 1}); 
         res.status(200).json(allSongs);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -37,6 +37,11 @@ songRouter.get('/:id', async (req, res) => {
 // Create a song
 songRouter.post('/', async (req, res) => {
     try {
+        const { title, artist } = req.body;
+        // Ensure that song and artist are created with datatype string
+        if (typeof title !== "string" || typeof artist !== "string") {
+            return res.status(400).json({ message: "Song and artist have to be string."})
+        }
         const newSong = await Song.create(req.body);
         res.status(201).json(newSong);
     } catch(error) {
@@ -47,9 +52,14 @@ songRouter.post('/', async (req, res) => {
 // Update a song by ID with validations
 songRouter.put('/:id', async (req, res) => {
     try {
+        const { title, artist } = req.body;
         const songId = req.params.id;
         if (isNaN(songId)) {
             return res.status(400).json({ message: "Song ID is not a valid number!"});
+        }
+        // Ensure taht updated song are created with datatype string
+        if ((title && typeof title !== "string") || (artist && typeof artist !== "string")) {
+            return res.status(400).json({ message: "Update song and artist have to be string."})
         }
         // Find a match song and update data
         const updateSong = await Song.findOneAndUpdate(
