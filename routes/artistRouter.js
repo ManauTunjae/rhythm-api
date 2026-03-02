@@ -64,7 +64,7 @@ artistRouter.put('/:id', async (req, res) => {
             { new: true, runValidators: true }
         );
         if (!updateArtist) {
-            return res.status(404).json({message: "Artist nor found."});
+            return res.status(404).json({message: "Artist not found."});
         }
         res.status(200).send(updateArtist);
     } catch (error) {
@@ -81,7 +81,7 @@ artistRouter.delete('/:id', async (req, res) => {
         }
         const deleteArtist = await Artist.findOneAndDelete({ id: artistId });
         if (!deleteArtist) {
-            return res.status(404),json({ message: "Artist not found."});
+            return res.status(404).json({ message: "Artist not found."});
         }
         res.status(204).send(deleteArtist);
     } catch (error) {
