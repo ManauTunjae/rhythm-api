@@ -26,13 +26,13 @@ songRouter.get('/:id', async (req, res) => {
         const song = await Song.findOne({ id: songId });
         // If not a song
         if (!song) {
-            return res.status(404).json({ message: "Song not found."})
+            return res.status(404).json({ message: "Song not found."});
         }
         res.status(200).json(song);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-})
+});
 
 // Create a song
 songRouter.post('/', async (req, res) => {
@@ -40,7 +40,7 @@ songRouter.post('/', async (req, res) => {
         const { title, artist } = req.body;
         // Ensure that song and artist are created with datatype string
         if (typeof title !== "string" || typeof artist !== "string") {
-            return res.status(400).json({ message: "Song and artist have to be string."})
+            return res.status(400).json({ message: "Song and artist have to be string."});
         }
         const newSong = await Song.create(req.body);
         res.status(201).json(newSong);
@@ -59,7 +59,7 @@ songRouter.put('/:id', async (req, res) => {
         }
         // Ensure taht updated song are created with datatype string
         if ((title && typeof title !== "string") || (artist && typeof artist !== "string")) {
-            return res.status(400).json({ message: "Update song and artist have to be string."})
+            return res.status(400).json({ message: "Update song and artist have to be string."});
         }
         // Find a match song and update data
         const updateSong = await Song.findOneAndUpdate(
@@ -74,7 +74,7 @@ songRouter.put('/:id', async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-})
+});
 
 // Delete a song
 songRouter.delete('/:id', async (req, res) => {
