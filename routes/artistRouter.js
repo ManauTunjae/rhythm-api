@@ -35,7 +35,7 @@ artistRouter.post('/', async (req, res) => {
     try {
         const { id, name } = req.body;
         if(typeof id !== "number") {
-            return res.status(400).json({ message: "Artist ID has to be number!"});
+            return res.status(400).json({ message: "Artist ID has to a be number!"});
         }
         if (typeof name !== "string") {
             return res.status(400).json({ message: "Artist name has to be string!"});
@@ -71,5 +71,22 @@ artistRouter.put('/:id', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
+// Delete artist by ID
+artistRouter.delete('/:id', async (req, res) => {
+    try {
+        const artistId = req.params.id;
+        if (isNaN(artistId)) {
+            return res.status(400).json({ message: "Artist ID has to be a valid number!"});
+        }
+        const deleteArtist = await Artist.findOneAndDelete({ id: artistId });
+        if (!deleteArtist) {
+            return res.status(404),json({ message: "Artist not found."});
+        }
+        res.status(204).send(deleteArtist);
+    } catch (error) {
+        res.status(500).json({message: error.message });
+    }
+}); 
 
 export default artistRouter;
