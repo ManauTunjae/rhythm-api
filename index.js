@@ -15,7 +15,7 @@ app.use('/api/artists', artistRouter);
 
 mongoose.connect(process.env.MONGODB_URI)
     .then(() => console.log("Connected to MOngoDB."))
-    .catch((err) => console.error("Could not connect to MongoDB!, err"));
+    .catch((err) => console.error("Could not connect to MongoDB!", err));
 
 app.get('/', (req, res) => {
     res.json("Welcome to my project rhythm-API.");
