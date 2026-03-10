@@ -30,3 +30,21 @@ export const getSongById = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const createSong = async (req, res) => {
+    try {
+        const { id, title, artist } = req.body;
+        if(typeof id !== "number") {
+            return res.status(400).json({ message: "Song ID has to be number!"});
+        }
+        // Ensure that title and artist are created with datatype string
+        if (typeof title !== "string" || typeof artist !== "string") {
+            return res.status(400).json({ message: "Song and artist have to be string."});
+        }
+        const newSong = await Song.create(req.body);
+        res.status(201).json(newSong);
+    } catch(error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
