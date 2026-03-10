@@ -1,17 +1,11 @@
 import express from "express";
 import Song from "../models/Song.js";
+import { getAllSongs } from "../controllers/songController.js";
 
 const songRouter = express.Router();
 
 // Get all songs from database
-songRouter.get('/', async (req, res) => {
-    try {
-        const allSongs = await Song.find().sort({ id: 1}); 
-        res.status(200).json(allSongs);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
+songRouter.get('/', getAllSongs);
 
 // Get a song by ID with validations
 songRouter.get('/:id', async (req, res) => {
