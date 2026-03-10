@@ -24,3 +24,19 @@ export const getArtistById = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+export const createArtist = async (req, res) => {
+    try {
+        const { id, name } = req.body;
+        if(typeof id !== "number") {
+            return res.status(400).json({ message: "Artist ID has to a be number!"});
+        }
+        if (typeof name !== "string") {
+            return res.status(400).json({ message: "Artist name has to be string!"});
+        }
+        const newArtist = await Artist.create(req.body);
+        res.status(201).json(newArtist);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};

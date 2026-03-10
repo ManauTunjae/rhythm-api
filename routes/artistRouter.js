@@ -1,6 +1,6 @@
 import express from "express";
 import Artist from "../models/Artist.js";
-import { getAllArtists, getArtistById } from "../controllers/artistController.js";
+import { createArtist, getAllArtists, getArtistById } from "../controllers/artistController.js";
 
 const artistRouter = express.Router();
 
@@ -11,21 +11,7 @@ artistRouter.get('/', getAllArtists);
 artistRouter.get('/:id', getArtistById);
 
 // Create an artist
-artistRouter.post('/', async (req, res) => {
-    try {
-        const { id, name } = req.body;
-        if(typeof id !== "number") {
-            return res.status(400).json({ message: "Artist ID has to a be number!"});
-        }
-        if (typeof name !== "string") {
-            return res.status(400).json({ message: "Artist name has to be string!"});
-        }
-        const newArtist = await Artist.create(req.body);
-        res.status(201).json(newArtist);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
+artistRouter.post('/', createArtist);
 
 // Update artist by ID
 artistRouter.put('/:id', async (req, res) => {
