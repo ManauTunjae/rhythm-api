@@ -1,17 +1,11 @@
 import express from "express";
 import Artist from "../models/Artist.js";
+import { getAllArtists } from "../controllers/artistController.js";
 
 const artistRouter = express.Router();
 
 // Get all artists
-artistRouter.get('/', async (req, res) => {
-    try {
-        const allArtists = await Artist.find().sort({ id: 1 });
-        res.status(200).json(allArtists);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
+artistRouter.get('/', getAllArtists);
 
 // Get a artist by ID
 artistRouter.get('/:id', async (req, res) => {
