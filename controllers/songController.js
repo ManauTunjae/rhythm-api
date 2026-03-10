@@ -73,3 +73,20 @@ export const updateSongById = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+export const deleteSong = async (req, res) => {
+    try {
+        const songId = req.params.id;
+        if (isNaN(songId)) {
+            return res.status(400).json({ message: "Song ID is not a valid number." });
+        }
+        // Find a match song by ID and delete that match song
+        const deleteSong = await Song.findOneAndDelete({ id: songId });
+        if(!deleteSong) {
+            return res.status(404).json({ message: "Song not found." });
+        }
+        res.status(204).send();
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
