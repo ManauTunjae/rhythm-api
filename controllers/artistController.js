@@ -1,8 +1,9 @@
+import mongoose from "mongoose";
 import Artist from "../models/Artist.js";
 
 export const getAllArtists = async (req, res) => {
   try {
-    const allArtists = await Artist.find().sort({ id: 1 });
+    const allArtists = await Artist.find().sort({ name: 1 });
     res.status(200).json(allArtists);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -11,13 +12,13 @@ export const getAllArtists = async (req, res) => {
 
 export const getArtistById = async (req, res) => {
   try {
-    const artistId = req.params.id;
-    if (isNaN(artistId)) {
+    const { id } = req.params; 
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return res
         .status(400)
-        .json({ message: "Artist ID is not a valid number!" });
+        .json({ message: "Invalid Artist ID form!" });
     }
-    const artist = await Artist.findOne({ id: artistId });
+    const artist = await Artist.findById(id);
     if (!artist) {
       return res.status(404).json({ message: "Artist not found." });
     }
@@ -29,10 +30,7 @@ export const getArtistById = async (req, res) => {
 
 export const createArtist = async (req, res) => {
   try {
-    const { id, name } = req.body;
-    if (typeof id !== "number") {
-      return res.status(400).json({ message: "Artist ID has to a be number!" });
-    }
+    const { name } = req.body;
     if (typeof name !== "string") {
       return res.status(400).json({ message: "Artist name has to be string!" });
     }
@@ -45,27 +43,25 @@ export const createArtist = async (req, res) => {
 
 export const updateArtistById = async (req, res) => {
   try {
+    const { id } = req.params;
     const { name } = req.body;
-    const artistId = req.params.id;
-    if (isNaN(artistId)) {
-      return res
-        .status(400)
-        .json({ message: "Artist ID has be a valid number!" });
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid Artist ID format!" });
     }
     if (name && typeof name !== "string") {
       return res
         .status(400)
         .json({ message: "Update artist name has to be string!" });
     }
-    const updateArtist = await Artist.findOneAndUpdate(
-      { id: artistId },
+    const updateArtist = await Artist.findByIdAndUpdate(
+      id,
       req.body,
       { new: true, runValidators: true },
     );
     if (!updateArtist) {
       return res.status(404).json({ message: "Artist not found." });
     }
-    res.status(200).send(updateArtist);
+    res.status(200).json(updateArtist);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -73,13 +69,13 @@ export const updateArtistById = async (req, res) => {
 
 export const deleteArtist = async (req, res) => {
   try {
-    const artistId = req.params.id;
-    if (isNaN(artistId)) {
+    const { id } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(id)) {
       return res
         .status(400)
-        .json({ message: "Artist ID has to be a valid number!" });
+        .json({ message: "Invalid Artist ID form!" });
     }
-    const deleteArtist = await Artist.findOneAndDelete({ id: artistId });
+    const deleteArtist = await Artist.findByIdAndDelete(id);
     if (!deleteArtist) {
       return res.status(404).json({ message: "Artist not found." });
     }

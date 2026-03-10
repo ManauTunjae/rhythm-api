@@ -2,11 +2,6 @@ import mongoose from "mongoose";
 
 const artistSchema = new mongoose.Schema(
   {
-    id: {
-      type: Number,
-      required: true,
-      unique: true,
-    },
     name: {
       type: String,
       required: true,
