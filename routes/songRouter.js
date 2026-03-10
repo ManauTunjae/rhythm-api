@@ -1,6 +1,6 @@
 import express from "express";
 import Song from "../models/Song.js";
-import { getAllSongs } from "../controllers/songController.js";
+import { getAllSongs, getSongById } from "../controllers/songController.js";
 
 const songRouter = express.Router();
 
@@ -8,25 +8,7 @@ const songRouter = express.Router();
 songRouter.get('/', getAllSongs);
 
 // Get a song by ID with validations
-songRouter.get('/:id', async (req, res) => {
-    try {
-        // Get ID from URL-parameter
-        const songId = req.params.id;
-        // If the song ID is not a number
-        if (isNaN(songId)) {
-            return res.status(400).json({ message: "Song ID is not a valid number!"});
-        } 
-        // Find a song by ID 
-        const song = await Song.findOne({ id: songId });
-        // If not a song
-        if (!song) {
-            return res.status(404).json({ message: "Song not found."});
-        }
-        res.status(200).json(song);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
+songRouter.get('/:id', getSongById);
 
 // Create a song
 songRouter.post('/', async (req, res) => {
