@@ -1,9 +1,20 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 import Song from "../models/Song.js";
 
 export const getAllSongs = async (req, res) => {
   try {
-    const allSongs = await Song.find().sort({ title: 1 });
+    const { q } = req.query;
+    let finding = {};
+    if (q) {
+      finding = {
+        $or: [
+          { title: { $regex: q, $options: "i" } },
+          { artist: { $regex: q, $options: "i" } }
+        ],
+      };
+    }
+
+    const allSongs = await Song.find(finding).sort({ title: 1 });
     res.status(200).json(allSongs);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -64,7 +75,7 @@ export const updateSongById = async (req, res) => {
     }
     // Find a match song and update data
     const updateSong = await Song.findByIdAndUpdate(
-      id, 
+      id,
       req.body,
       { new: true, runValidators: true }, // Return updated song and ensure Mongoose validation is run on update
     );
